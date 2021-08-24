@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import ChameleonFramework
 
 class ItemsTableViewController: SwipeTableViewController {
     
@@ -24,6 +25,7 @@ class ItemsTableViewController: SwipeTableViewController {
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
         navigationItem.title = selectedCategory?.name
+        tableView.separatorStyle = .none
     }
     
     //MARK: - UITableViewControllerDataSource delegate methods
@@ -37,6 +39,11 @@ class ItemsTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = item.title
         cell.accessoryType = item.isDone ? .checkmark : .none
+        let itemNumber = CGFloat(indexPath.row)
+        let itemsCount = CGFloat(items.count)
+        let percentage = itemNumber / itemsCount
+        cell.backgroundColor = K.appColor.darken(byPercentage: percentage)
+        cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true)
         
         return cell
         
