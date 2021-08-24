@@ -101,4 +101,13 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         // Override in sub-class and update model in subclass.
     }
     
+    func showErrorAlert(with message: String = "TextField is empty! Please enter a valid text.") {
+        
+        let errorAlert = UIAlertController(title: "ERROR", message: message, preferredStyle: .alert)
+        let errorAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        errorAlert.addAction(errorAction)
+        present(errorAlert, animated: true, completion: nil)
+        
+    }
+    
 }

@@ -125,6 +125,7 @@ class ItemsTableViewController: SwipeTableViewController {
             
         }else {
             request.predicate = categoryPredicate
+            request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         }
         
         do {
@@ -142,15 +143,6 @@ class ItemsTableViewController: SwipeTableViewController {
         request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", userSearchedText)
         request.sortDescriptors = [NSSortDescriptor(key: "createdDate", ascending: true)]
         return request
-    }
-    
-    func showErrorAlert(with message: String = "TextField is empty! Please enter a valid text.") {
-        
-        let errorAlert = UIAlertController(title: "ERROR", message: message, preferredStyle: .alert)
-        let errorAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        errorAlert.addAction(errorAction)
-        present(errorAlert, animated: true, completion: nil)
-        
     }
     
     //MARK: - Overridden Super Class Method

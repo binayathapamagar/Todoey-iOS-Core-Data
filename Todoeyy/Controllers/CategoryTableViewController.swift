@@ -18,7 +18,7 @@ class CategoryTableViewController: SwipeTableViewController {
         super.viewDidLoad()
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
-        loadCategories()
+        loadCategories(with: getRequestForAllCategories())
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -112,7 +112,7 @@ class CategoryTableViewController: SwipeTableViewController {
         
     }
     
-    func loadCategories (with request: NSFetchRequest<Category> = Category.fetchRequest()) {
+    func loadCategories (with request: NSFetchRequest<Category>) {
         
         do {
             categories = try context.fetch(request)
@@ -133,13 +133,10 @@ class CategoryTableViewController: SwipeTableViewController {
         
     }
     
-    func showErrorAlert(with message: String = "TextField is empty! Please enter a valid text.") {
-        
-        let errorAlert = UIAlertController(title: "ERROR", message: message, preferredStyle: .alert)
-        let errorAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        errorAlert.addAction(errorAction)
-        present(errorAlert, animated: true, completion: nil)
-        
+    func getRequestForAllCategories() -> NSFetchRequest<Category>  {
+        let request: NSFetchRequest<Category> = Category.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        return request
     }
     
     //MARK: - Overridden Super Class Method
@@ -158,7 +155,7 @@ class CategoryTableViewController: SwipeTableViewController {
         if !searchedItem.isEmpty {
             loadCategories(with: getRequest(with: searchedItem))
         }else {
-            loadCategories()
+            loadCategories(with: getRequestForAllCategories())
         }
     }
     
@@ -166,7 +163,7 @@ class CategoryTableViewController: SwipeTableViewController {
         if !textThatGotChanged.isEmpty {
             loadCategories(with: getRequest(with: textThatGotChanged))
         }else {
-            loadCategories()
+            loadCategories(with: getRequestForAllCategories())
         }
     }
     
