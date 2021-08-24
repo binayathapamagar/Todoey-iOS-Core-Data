@@ -92,6 +92,7 @@ class ItemsTableViewController: SwipeTableViewController {
         alertController.addTextField { alertTextField in
             alertTextField.placeholder = "Create a new Item"
             alertTextField.autocapitalizationType = .sentences
+            alertTextField.textColor = .black
             textField = alertTextField
         }
         
@@ -189,6 +190,7 @@ class ItemsTableViewController: SwipeTableViewController {
             alertTextField.placeholder = "Update \(item.title!)"
             alertTextField.text = item.title
             alertTextField.autocapitalizationType = .sentences
+            alertTextField.textColor = .black
             textField = alertTextField
         }
         

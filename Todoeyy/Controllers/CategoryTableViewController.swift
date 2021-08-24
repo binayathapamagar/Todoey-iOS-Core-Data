@@ -42,6 +42,7 @@ class CategoryTableViewController: SwipeTableViewController {
         addAlertController.addTextField { alertTextField in
             alertTextField.placeholder = "Add a new category"
             alertTextField.autocapitalizationType = .sentences
+            alertTextField.textColor = .black
             textField = alertTextField
         }
         
@@ -183,6 +184,7 @@ class CategoryTableViewController: SwipeTableViewController {
             alertTextField.placeholder = "Update \(category.name!)"
             alertTextField.text = category.name
             alertTextField.autocapitalizationType = .sentences
+            alertTextField.textColor = .black
             textField = alertTextField
         }
         
