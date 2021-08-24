@@ -21,6 +21,15 @@ class CategoryTableViewController: SwipeTableViewController {
         loadCategories()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let navBar = navigationController?.navigationBar {
+            navBar.backgroundColor = K.appColor
+            navBar.tintColor = .black
+            navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        }
+    }
+    
     //MARK: - IBAction Method
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {

@@ -13,11 +13,6 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
     override func viewDidLoad() {
         tableView.rowHeight = 80.0
         tableView.backgroundColor = K.appColor
-        if let navBar = navigationController?.navigationBar {
-            navBar.barTintColor = K.appColor
-            navBar.tintColor = .black
-            navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        }
         super.viewDidLoad()
     }
     
