@@ -25,7 +25,6 @@ class ItemsTableViewController: SwipeTableViewController {
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
         navigationItem.title = selectedCategory?.name
-        tableView.separatorStyle = .none
     }
     
     //MARK: - UITableViewControllerDataSource delegate methods

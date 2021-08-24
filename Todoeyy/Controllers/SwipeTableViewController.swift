@@ -14,6 +14,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         tableView.rowHeight = 80.0
         tableView.backgroundColor = K.appColor
         super.viewDidLoad()
+        tableView.separatorStyle = .none
     }
     
     // MARK: - Table view data source
