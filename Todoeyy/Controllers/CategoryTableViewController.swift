@@ -18,6 +18,7 @@ class CategoryTableViewController: SwipeTableViewController {
         super.viewDidLoad()
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
+        searchBar.searchTextField.leftView?.tintColor = .black
         loadCategories(with: getRequestForAllCategories())
     }
     
@@ -40,6 +41,7 @@ class CategoryTableViewController: SwipeTableViewController {
         
         addAlertController.addTextField { alertTextField in
             alertTextField.placeholder = "Add a new category"
+            alertTextField.autocapitalizationType = .sentences
             textField = alertTextField
         }
         
@@ -77,6 +79,7 @@ class CategoryTableViewController: SwipeTableViewController {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categories[indexPath.row].name
+        cell.textLabel?.textColor = .black
         
         return cell
         
@@ -179,6 +182,7 @@ class CategoryTableViewController: SwipeTableViewController {
         addAlertController.addTextField { alertTextField in
             alertTextField.placeholder = "Update \(category.name!)"
             alertTextField.text = category.name
+            alertTextField.autocapitalizationType = .sentences
             textField = alertTextField
         }
         

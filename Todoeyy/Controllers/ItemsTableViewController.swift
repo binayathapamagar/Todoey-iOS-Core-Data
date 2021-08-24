@@ -24,6 +24,7 @@ class ItemsTableViewController: SwipeTableViewController {
         super.viewDidLoad()
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
+        searchBar.searchTextField.leftView?.tintColor = .black
         navigationItem.title = selectedCategory?.name
     }
     
@@ -90,6 +91,7 @@ class ItemsTableViewController: SwipeTableViewController {
         
         alertController.addTextField { alertTextField in
             alertTextField.placeholder = "Create a new Item"
+            alertTextField.autocapitalizationType = .sentences
             textField = alertTextField
         }
         
@@ -186,6 +188,7 @@ class ItemsTableViewController: SwipeTableViewController {
         addAlertController.addTextField { alertTextField in
             alertTextField.placeholder = "Update \(item.title!)"
             alertTextField.text = item.title
+            alertTextField.autocapitalizationType = .sentences
             textField = alertTextField
         }
         
