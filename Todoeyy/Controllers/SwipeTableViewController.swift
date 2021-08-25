@@ -25,6 +25,8 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         cell.delegate = self
         cell.backgroundColor = K.appColor
         cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.textLabel?.adjustsFontForContentSizeCategory = true
         
         return cell
         

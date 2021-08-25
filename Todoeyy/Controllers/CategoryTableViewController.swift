@@ -98,6 +98,7 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categories[indexPath.row].name
         cell.textLabel?.textColor = .black
+
         tableViewLines()
         
         return cell
