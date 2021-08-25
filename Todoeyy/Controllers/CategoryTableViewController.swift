@@ -23,7 +23,6 @@ class CategoryTableViewController: SwipeTableViewController {
         searchBar.searchTextField.textColor = .black
         searchBar.placeholder = "Search for a Category"
         loadCategories(with: getRequestForAllCategories())
-        UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).adjustsFontSizeToFitWidth = true
     }
     
     override func viewWillAppear(_ animated: Bool) {

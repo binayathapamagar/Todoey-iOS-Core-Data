@@ -15,6 +15,7 @@ class SwipeTableViewController: UITableViewController, SwipeTableViewCellDelegat
         tableView.backgroundColor = K.appColor
         super.viewDidLoad()
         tableView.separatorStyle = .none
+        UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).adjustsFontSizeToFitWidth = true
     }
     
     // MARK: - Table view data source
