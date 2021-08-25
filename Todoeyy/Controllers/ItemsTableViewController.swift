@@ -12,6 +12,7 @@ import ChameleonFramework
 class ItemsTableViewController: SwipeTableViewController {
     
     var items = [Item]()
+    var duplicatesArray = [Item]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     @IBOutlet weak var searchBar: UISearchBar!
     var selectedCategory: Category? {
@@ -25,6 +26,8 @@ class ItemsTableViewController: SwipeTableViewController {
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
         searchBar.searchTextField.leftView?.tintColor = .black
+        searchBar.searchTextField.textColor = .black
+        searchBar.placeholder = "Search for an Item"
         navigationItem.title = selectedCategory?.name
     }
     
@@ -69,9 +72,15 @@ class ItemsTableViewController: SwipeTableViewController {
         
         let addAction = UIAlertAction(title: "Add", style: .default) { alertAction in
             
+            self.loadDuplicatesCheckArray(with: textField.text!)
+            
             if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
                 
                 self.showErrorAlert()
+                
+            }else if !self.duplicatesArray.isEmpty {
+                
+                self.showErrorAlert(with: "Item already exists!")
                 
             }else {
                 
@@ -82,6 +91,8 @@ class ItemsTableViewController: SwipeTableViewController {
                 newItem.parentCategory = self.selectedCategory
                 self.items.append(newItem)
                 self.saveItems()
+                let indexPath = IndexPath(row: self.items.count - 1, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 
             }
             
@@ -92,7 +103,7 @@ class ItemsTableViewController: SwipeTableViewController {
         alertController.addTextField { alertTextField in
             alertTextField.placeholder = "Create a new Item"
             alertTextField.autocapitalizationType = .sentences
-            alertTextField.textColor = .black
+            alertTextField.autocorrectionType = .default
             textField = alertTextField
         }
         
@@ -137,6 +148,22 @@ class ItemsTableViewController: SwipeTableViewController {
         }
         
         tableView.reloadData()
+        
+    }
+    
+    func loadDuplicatesCheckArray (with itemTitle: String) {
+        do {
+            duplicatesArray = try context.fetch(self.getFetchReqToCheckForDuplicates(with: itemTitle))
+        } catch {
+            print("Error loading categories: \(error)")
+        }
+    }
+    
+    func getFetchReqToCheckForDuplicates (with userEnteredText: String) -> NSFetchRequest<Item> {
+      
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        request.predicate = NSPredicate(format: "title MATCHES[cd] %@", userEnteredText)
+        return request
         
     }
     
@@ -190,11 +217,13 @@ class ItemsTableViewController: SwipeTableViewController {
             alertTextField.placeholder = "Update \(item.title!)"
             alertTextField.text = item.title
             alertTextField.autocapitalizationType = .sentences
-            alertTextField.textColor = .black
+            alertTextField.autocorrectionType = .default
             textField = alertTextField
         }
         
         let updateAction = UIAlertAction(title: "Update", style: .default) { addAction in
+            
+            self.loadDuplicatesCheckArray(with: textField.text!)
             
             if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
                
@@ -206,7 +235,11 @@ class ItemsTableViewController: SwipeTableViewController {
                 self.showErrorAlert(with: "New Item name cannot be the same as the previous name.")
                 self.tableView.reloadData()
                 
-            } else {
+            } else if !self.duplicatesArray.isEmpty {
+                
+                self.showErrorAlert(with: "Item with that title already exists!")
+                
+            }else {
                 
                 // Update Item in db.
                 item.title = textField.text

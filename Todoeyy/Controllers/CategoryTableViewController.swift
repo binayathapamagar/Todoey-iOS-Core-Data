@@ -11,6 +11,7 @@ import CoreData
 class CategoryTableViewController: SwipeTableViewController {
     
     var categories = [Category]()
+    var duplicatesArray = [Category]()
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -19,6 +20,8 @@ class CategoryTableViewController: SwipeTableViewController {
         searchBar.barTintColor = K.appColor
         searchBar.searchTextField.backgroundColor = .white
         searchBar.searchTextField.leftView?.tintColor = .black
+        searchBar.searchTextField.textColor = .black
+        searchBar.placeholder = "Search for a Category"
         loadCategories(with: getRequestForAllCategories())
     }
     
@@ -28,6 +31,7 @@ class CategoryTableViewController: SwipeTableViewController {
             navBar.backgroundColor = K.appColor
             navBar.tintColor = .black
             navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+            navBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         }
     }
     
@@ -41,22 +45,32 @@ class CategoryTableViewController: SwipeTableViewController {
         
         addAlertController.addTextField { alertTextField in
             alertTextField.placeholder = "Add a new category"
+            alertTextField.autocorrectionType = .default
             alertTextField.autocapitalizationType = .sentences
-            alertTextField.textColor = .black
             textField = alertTextField
         }
         
         let addAction = UIAlertAction(title: "Add", style: .default) { addAction in
             
+            self.loadDuplicatesCheckArray(with: textField.text!)
+            
             if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
+                
                 self.showErrorAlert()
-            }else {
+                
+            }else if !self.duplicatesArray.isEmpty {
+                
+                self.showErrorAlert(with: "Category already exists!")
+                
+            } else {
                 
                 let newCategory = Category(context: self.context)
                 newCategory.name = textField.text!
                 newCategory.createdDate = Date()
                 self.categories.append(newCategory)
                 self.saveCategories()
+                let indexPath = IndexPath(row: self.categories.count - 1, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                 
             }
             
@@ -81,6 +95,7 @@ class CategoryTableViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categories[indexPath.row].name
         cell.textLabel?.textColor = .black
+        tableViewLines()
         
         return cell
         
@@ -127,6 +142,18 @@ class CategoryTableViewController: SwipeTableViewController {
         
     }
     
+    func tableViewLines() {
+        tableView.separatorStyle = categories.isEmpty ? .none : .singleLine
+    }
+    
+    func loadDuplicatesCheckArray (with categoryName: String) {
+        do {
+            duplicatesArray = try context.fetch(self.getFetchReqToCheckForDuplicates(with: categoryName))
+        } catch {
+            print("Error loading categories: \(error)")
+        }
+    }
+    
     func getRequest(with searchedText: String) -> NSFetchRequest<Category> {
         
         let request: NSFetchRequest<Category> = Category.fetchRequest()
@@ -143,6 +170,14 @@ class CategoryTableViewController: SwipeTableViewController {
         return request
     }
     
+    func getFetchReqToCheckForDuplicates (with userEnteredText: String) -> NSFetchRequest<Category> {
+      
+        let request: NSFetchRequest<Category> = Category.fetchRequest()
+        request.predicate = NSPredicate(format: "name MATCHES[cd] %@", userEnteredText)
+        return request
+        
+    }
+    
     //MARK: - Overridden Super Class Method
     
     override func deleteModel(with indexPath: IndexPath) {
@@ -153,6 +188,7 @@ class CategoryTableViewController: SwipeTableViewController {
         } catch {
             print("Error saving to the database: \(error.localizedDescription)")
         }
+        tableViewLines()
     }
     
     override func fetchUserSearchedItems(with searchedItem: String) {
@@ -184,11 +220,13 @@ class CategoryTableViewController: SwipeTableViewController {
             alertTextField.placeholder = "Update \(category.name!)"
             alertTextField.text = category.name
             alertTextField.autocapitalizationType = .sentences
-            alertTextField.textColor = .black
+            alertTextField.autocorrectionType = .default
             textField = alertTextField
         }
         
         let updateAction = UIAlertAction(title: "Update", style: .default) { addAction in
+            
+            self.loadDuplicatesCheckArray(with: textField.text!)
             
             if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
                
@@ -198,6 +236,11 @@ class CategoryTableViewController: SwipeTableViewController {
             }else if initialName == textField.text! {
                 
                 self.showErrorAlert(with: "New Category name cannot be the same as the previous name.")
+                self.tableView.reloadData()
+                
+            }else if !self.duplicatesArray.isEmpty {
+                
+                self.showErrorAlert(with: "Category with that name already exists!")
                 self.tableView.reloadData()
                 
             } else {
