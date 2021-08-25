@@ -72,9 +72,11 @@ class ItemsTableViewController: SwipeTableViewController {
         
         let addAction = UIAlertAction(title: "Add", style: .default) { alertAction in
             
-            self.loadDuplicatesCheckArray(with: textField.text!)
+            let newItemTitle = textField.text!.trimmingCharacters(in: .whitespaces)
+
+            self.loadDuplicatesCheckArray(with: newItemTitle)
             
-            if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
+            if newItemTitle == "" {
                 
                 self.showErrorAlert()
                 
@@ -85,7 +87,7 @@ class ItemsTableViewController: SwipeTableViewController {
             }else {
                 
                 let newItem = Item(context: self.context)
-                newItem.title = textField.text!
+                newItem.title = newItemTitle
                 newItem.createdDate = Date()
                 newItem.isDone = false
                 newItem.parentCategory = self.selectedCategory
@@ -223,9 +225,11 @@ class ItemsTableViewController: SwipeTableViewController {
         
         let updateAction = UIAlertAction(title: "Update", style: .default) { addAction in
             
-            self.loadDuplicatesCheckArray(with: textField.text!)
+            let newItemTitle = textField.text!.trimmingCharacters(in: .whitespaces)
+
+            self.loadDuplicatesCheckArray(with: newItemTitle)
             
-            if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
+            if newItemTitle == "" {
                
                 self.showErrorAlert()
                 self.tableView.reloadData()
@@ -238,11 +242,12 @@ class ItemsTableViewController: SwipeTableViewController {
             } else if !self.duplicatesArray.isEmpty {
                 
                 self.showErrorAlert(with: "Item with that title already exists!")
+                self.tableView.reloadData()
                 
             }else {
                 
                 // Update Item in db.
-                item.title = textField.text
+                item.title = newItemTitle
                 self.saveItems()
                 
             }

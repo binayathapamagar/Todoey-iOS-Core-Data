@@ -23,6 +23,7 @@ class CategoryTableViewController: SwipeTableViewController {
         searchBar.searchTextField.textColor = .black
         searchBar.placeholder = "Search for a Category"
         loadCategories(with: getRequestForAllCategories())
+        UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).adjustsFontSizeToFitWidth = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,9 +53,11 @@ class CategoryTableViewController: SwipeTableViewController {
         
         let addAction = UIAlertAction(title: "Add", style: .default) { addAction in
             
-            self.loadDuplicatesCheckArray(with: textField.text!)
+            let newCategoryName = textField.text!.trimmingCharacters(in: .whitespaces)
             
-            if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
+            self.loadDuplicatesCheckArray(with: newCategoryName)
+            
+            if newCategoryName == "" {
                 
                 self.showErrorAlert()
                 
@@ -65,7 +68,7 @@ class CategoryTableViewController: SwipeTableViewController {
             } else {
                 
                 let newCategory = Category(context: self.context)
-                newCategory.name = textField.text!
+                newCategory.name = newCategoryName
                 newCategory.createdDate = Date()
                 self.categories.append(newCategory)
                 self.saveCategories()
@@ -226,14 +229,16 @@ class CategoryTableViewController: SwipeTableViewController {
         
         let updateAction = UIAlertAction(title: "Update", style: .default) { addAction in
             
-            self.loadDuplicatesCheckArray(with: textField.text!)
+            let newCategoryName = textField.text!.trimmingCharacters(in: .whitespaces)
             
-            if textField.text!.trimmingCharacters(in: .whitespaces) == "" {
+            self.loadDuplicatesCheckArray(with: newCategoryName)
+            
+            if newCategoryName == "" {
                
                 self.showErrorAlert()
                 self.tableView.reloadData()
                 
-            }else if initialName == textField.text! {
+            }else if initialName == newCategoryName {
                 
                 self.showErrorAlert(with: "New Category name cannot be the same as the previous name.")
                 self.tableView.reloadData()
@@ -246,7 +251,7 @@ class CategoryTableViewController: SwipeTableViewController {
             } else {
                 
                 // Update Category in db.
-                category.name = textField.text
+                category.name = newCategoryName
                 self.saveCategories()
                 
             }
